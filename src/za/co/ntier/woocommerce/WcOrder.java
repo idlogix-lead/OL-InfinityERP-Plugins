@@ -8,24 +8,21 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.IProductPricing;
-import org.compiere.model.I_C_Order;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MBPartnerLocation;
-import org.compiere.model.MInvoice;
-import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MLocation;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProduct;
+import org.compiere.model.MRefList;
+import org.compiere.model.MReference;
 import org.compiere.model.MUser;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
@@ -34,9 +31,9 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.ValueNamePair;
 
 import za.co.ntier.model.MCourierCompany;
-import za.co.ntier.woocommerce.MetaDataObject;
 /**
  *
  * Create Order and lines on iDempiere as received from WooCommerce
@@ -93,7 +90,9 @@ public final class WcOrder {
 		order.setDeliveryRule("F");
 		order.setInvoiceRule("D");
 		setPaymentMethod(order);
-		
+		String coupons = getcouponCodes(orderWc);
+		if(coupons.length()>0)
+			order.set_ValueOfColumn("couponcode", coupons);		
 		
 		if (!order.save()) {
 			throw new IllegalStateException("Could not create order");
@@ -555,4 +554,41 @@ void setLinePricing(MOrderLine oline) {
 		}
 	}
 
+	String getcouponCodes(Map<?,?> wcOrder) {
+//		MReference reference = new MReference(ctx, "1bc246ff-9c1f-4390-b4a7-f248dda300bb", trxName);
+//		List<String> existing = new ArrayList<String>();
+//		String sql ="select value,name from ad_ref_list where ad_reference_id = ?";
+//		ValueNamePair[] pairs = DB.getValueNamePairs(sql, true, Arrays.asList(reference.get_ID()));
+//		for(ValueNamePair code:pairs) {
+//			existing.add(code.getID());
+//		}
+//		List<String> codes = new ArrayList<String>();
+//		if(wcOrder.get("coupon_lines")!=null) 
+//		{
+//			List<?> couponLines = (List<?>)wcOrder.get("coupon_lines");
+//			for(int i=0;i<couponLines.size();i++) {
+//				Map<?,?> line = (Map<?,?>)couponLines.get(i);
+//				String ccode = (String)line.get("code");
+//				if(existing.contains(ccode))
+//					codes.add(ccode);
+//				else 
+//				{
+//					MRefList coupon = new MRefList(ctx, 0, ccode);
+//					coupon.setAD_Reference_ID(reference.get_ID());
+//					coupon.setValue(ccode);
+//					coupon.setName(ccode);
+//					coupon.setAD_Org_ID(0);
+//					
+//					try {
+//						coupon.saveEx();
+//						codes.add(ccode);
+//					} catch (Exception e) {
+//						// TODO: handle exception
+//					};
+//				}
+//			}
+//		}
+//		return String.join(",", codes);
+		return "";
+	}
 }

@@ -22,10 +22,10 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.WListbox;
-import org.adempiere.webui.editor.WNumberEditor;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.window.Dialog;
 import org.compiere.model.I_C_Order;
+import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MCharge;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
@@ -45,9 +45,7 @@ import org.compiere.util.Env;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
@@ -497,6 +495,13 @@ public class ReturnForm  extends ADForm {
 			cReturn.setC_BPartner_ID(shipment.getC_BPartner_ID());
 			String loc = Env.getContext(Env.getCtx(), getWindowNo(), Env.TAB_INFO, "C_BPartner_Location_ID");
 			int locationId = 1000036;
+			MBPartnerLocation[] locs = MBPartnerLocation.getForBPartner(Env.getCtx(), shipment.getC_BPartner_ID() ,null)	;	
+			if(locs.length>0) {
+				locationId = locs[0].getC_BPartner_Location_ID();
+			}
+			else {
+				throw new AdempiereException("No BPartner Location");
+			}
 			cReturn.setC_BPartner_Location_ID(locationId);
 			cReturn.setMovementDate(new Timestamp(System.currentTimeMillis()));
 			cReturn.setDateAcct(new Timestamp(System.currentTimeMillis()));
@@ -557,10 +562,10 @@ public class ReturnForm  extends ADForm {
 			invoice.setDateInvoiced(new Timestamp(System.currentTimeMillis()));
 			invoice.setDateAcct(new Timestamp(System.currentTimeMillis()));
 			invoice.setBPartner(shipment.getBPartner());	
-			invoice.setM_PriceList_ID(1000001);
-			invoice.setC_Currency_ID(306);
+			invoice.setM_PriceList_ID(shipment.getC_Order().getM_PriceList_ID());
+			invoice.setC_Currency_ID(shipment.getC_Order().getC_Currency_ID());
 			invoice.setPaymentRule("P");
-			invoice.setC_PaymentTerm_ID(1000000);
+			invoice.setC_PaymentTerm_ID(shipment.getC_Order().getC_PaymentTerm_ID());
 			invoice.setDocAction("CO");
 			invoice.setDocStatus("DR");
 			invoice.save();
@@ -615,7 +620,7 @@ public class ReturnForm  extends ADForm {
 				+ "join m_inout io ON iol.m_inout_id = io.m_inout_id\r\n"
 				+ "left join m_product p ON iol.m_product_id =p.m_product_id\r\n"
 				+ "left join c_charge c ON iol.c_charge_id =c.c_charge_id\r\n"
-				+ "where io.c_order_id = "+ order.getC_Order_ID() +" and io.issotrx = 'Y'  and iol.movementqty <> 0\r\n"
+				+ "where io.c_order_id = "+ order.getC_Order_ID() +" and io.issotrx = 'Y'  and iol.movementqty <> 0 and iol.c_charge_id is null \r\n"
 				+ "and iol.movementqty-coalesce((select SUM(qty) from m_rmaline where m_inoutline_id = iol.m_inoutline_id),0)>0\r\n"
 				+ "order by io.documentno,p.value\r\n"
 				+ "\r\n"
