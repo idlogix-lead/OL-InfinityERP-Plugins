@@ -58,7 +58,7 @@ public class ReturnForm  extends ADForm {
 	WListbox orderData;
 	Textbox courierCode = new Textbox();
 	Textbox barCode = new Textbox();
-	Label hdrLabel = new Label("Packing Form");
+	Label hdrLabel = new Label("Return Form");
 	Label cnLabel = new Label("CN Number:");
 	Label bpLabel = new Label("Business Partner:");
 	Label soLabel = new Label("SO Number:");
@@ -395,8 +395,8 @@ public class ReturnForm  extends ADForm {
 	private void completeOrder() {
 		
 		createCustomerRMA(ships);
-		createReturn(ships);
-		createInvoice(ships);
+//		createReturn(ships);
+//		createInvoice(ships);
 		reset();
 		
 	}
@@ -478,18 +478,20 @@ public class ReturnForm  extends ADForm {
 			RMA.setDocAction("CO");
 			if (RMA.processIt("CO"))
 			{
-				RMA.saveEx();	
+				RMA.saveEx();
+				createReturn(shipment,RMA);
 			} else {	
 				throw new IllegalStateException("RMA Process Failed: " + order + " - " + RMA.getProcessMsg());
 			}
 		}	
 	}
 
-	private void createReturn(List<MInOut> shipments) {
+	private void createReturn(MInOut shipment,MRMA rma) {
 		if(getScannedQty().compareTo(Env.ZERO)<=0)
 			return;
-		for(MInOut shipment:shipments) {
 			MInOut cReturn = new MInOut(Env.getCtx(), 0, null);
+			cReturn.setDescription("Return for Order# "+order.getDocumentNo());
+			cReturn.setM_RMA_ID(rma.getM_RMA_ID());
 			cReturn.setAD_Org_ID(Env.getAD_Org_ID(Env.getCtx()));
 			cReturn.setC_DocType_ID(1000015);
 			cReturn.setC_BPartner_ID(shipment.getC_BPartner_ID());
@@ -535,24 +537,23 @@ public class ReturnForm  extends ADForm {
 				obj.setReturnLine(line);
 				}
 			}
-			
-			
-			
 			cReturn.setDocAction("CO");
 			if (cReturn.processIt("CO"))
 			{
 				order.saveEx();	
+				createInvoice(shipment);
 			} else {
 				throw new IllegalStateException("Return Process Failed: " + order + " - " + cReturn.getProcessMsg());
 			}
-			}
+			
 	}
-	private void createInvoice(List<MInOut> shipments) {
+	private void createInvoice(MInOut shipment) {
 		if(getScannedQty().compareTo(Env.ZERO)<=0)
 			return;
-            for(MInOut shipment:shipments) {
+            
 			
 			MInvoice invoice  = new MInvoice(Env.getCtx(),0,null);
+			invoice.setDescription("Credit Memo for Order# "+order.getDocumentNo());
 			invoice.setIsSOTrx(true);
 			invoice.setAD_Org_ID(shipment.getAD_Org_ID());
 			invoice.setC_Order_ID(shipment.getC_Order_ID());
@@ -569,7 +570,6 @@ public class ReturnForm  extends ADForm {
 			invoice.setDocAction("CO");
 			invoice.setDocStatus("DR");
 			invoice.save();
-			
 			ListModelTable model = ((WListbox)orderData).getModel();
 			for(int i = 0;i<model.getSize();i++) {
 				DataObject obj = (DataObject) ((WListbox)orderData).getModel().getDataAt(i,6);
@@ -602,7 +602,7 @@ public class ReturnForm  extends ADForm {
 			} else {
 				throw new IllegalStateException("Invoice Process Failed: " + order + " - " + invoice.getProcessMsg());
 			}
-		}
+		
 	}
 	
 	
@@ -657,8 +657,6 @@ public class ReturnForm  extends ADForm {
 
 				listModel = new ListModelTable(model);
 				orderData.setModel(listModel);
-				
-				
 				orderData.setItemRenderer((item,data,index)->{
 					List<Object> list  = (List<Object>)data;
 					ListCell cell = new ListCell(list.get(0).toString());
