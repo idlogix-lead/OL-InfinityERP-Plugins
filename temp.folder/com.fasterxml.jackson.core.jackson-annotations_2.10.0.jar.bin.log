@@ -1,0 +1,159 @@
+# 6/4/24, 10:36:30 AM PKT
+# Eclipse Compiler for Java(TM) v20230523-1233, 3.34.0, Copyright IBM Corp 2000, 2020. All rights reserved.
+----------
+1. WARNING in E:\infinity-projects\OL-InfinityERP-Plugins\src\com\icoderman\woocommerce\DefaultHttpClient.java (at line 10)
+	import org.apache.http.HttpStatus;
+	       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+The import org.apache.http.HttpStatus is never used
+----------
+----------
+2. WARNING in E:\infinity-projects\OL-InfinityERP-Plugins\src\com\icoderman\woocommerce\oauth\OAuthSignature.java (at line 60)
+	Map<String, String> oauthParameters = getAsMap(config, endpoint, httpMethod, params);
+	                    ^^^^^^^^^^^^^^^
+The value of the local variable oauthParameters is not used
+----------
+----------
+3. WARNING in E:\infinity-projects\OL-InfinityERP-Plugins\src\za\co\ntier\callouts\GenerateProductCode.java (at line 8)
+	import org.compiere.model.MProduct;
+	       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The import org.compiere.model.MProduct is never used
+----------
+4. WARNING in E:\infinity-projects\OL-InfinityERP-Plugins\src\za\co\ntier\callouts\GenerateProductCode.java (at line 10)
+	import org.compiere.model.MSequence;
+	       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The import org.compiere.model.MSequence is never used
+----------
+5. WARNING in E:\infinity-projects\OL-InfinityERP-Plugins\src\za\co\ntier\callouts\GenerateProductCode.java (at line 12)
+	import org.compiere.util.Env;
+	       ^^^^^^^^^^^^^^^^^^^^^
+The import org.compiere.util.Env is never used
+----------
+6. WARNING in E:\infinity-projects\OL-InfinityERP-Plugins\src\za\co\ntier\callouts\GenerateProductCode.java (at line 40)
+	private int getNextProdID() {
+	            ^^^^^^^^^^^^^^^
+The method getNextProdID() from the type GenerateProductCode is never used locally
+----------
+----------
+7. WARNING in E:\infinity-projects\OL-InfinityERP-Plugins\src\za\co\ntier\forms\PackingForm.java (at line 37)
+	public class PackingForm  extends ADForm {
+	             ^^^^^^^^^^^
+The serializable class PackingForm does not declare a static final serialVersionUID field of type long
+----------
+----------
+8. WARNING in E:\infinity-projects\OL-InfinityERP-Plugins\src\za\co\ntier\forms\ReturnForm.java (at line 54)
+	public class ReturnForm  extends ADForm {
+	             ^^^^^^^^^^
+The serializable class ReturnForm does not declare a static final serialVersionUID field of type long
+----------
+9. WARNING in E:\infinity-projects\OL-InfinityERP-Plugins\src\za\co\ntier\forms\ReturnForm.java (at line 249)
+	boolean isChecked = cb.isChecked();
+	        ^^^^^^^^^
+The value of the local variable isChecked is not used
+----------
+10. WARNING in E:\infinity-projects\OL-InfinityERP-Plugins\src\za\co\ntier\forms\ReturnForm.java (at line 403)
+	BigDecimal OrderQty = obj.getOrderQty();
+	           ^^^^^^^^
+The value of the local variable OrderQty is not used
+----------
+11. WARNING in E:\infinity-projects\OL-InfinityERP-Plugins\src\za\co\ntier\forms\ReturnForm.java (at line 510)
+	String loc = Env.getContext(Env.getCtx(), getWindowNo(), Env.TAB_INFO, "C_BPartner_Location_ID");
+	       ^^^
+The value of the local variable loc is not used
+----------
+12. WARNING in E:\infinity-projects\OL-InfinityERP-Plugins\src\za\co\ntier\forms\ReturnForm.java (at line 726)
+	List<Object> list  = (List<Object>)data;
+	                     ^^^^^^^^^^^^^^^^^^
+Type safety: Unchecked cast from Object to List<Object>
+----------
+----------
+13. WARNING in E:\infinity-projects\OL-InfinityERP-Plugins\src\za\co\ntier\model\MCourierCompany.java (at line 6)
+	public class MCourierCompany extends X_Courier_Company {
+	             ^^^^^^^^^^^^^^^
+The serializable class MCourierCompany does not declare a static final serialVersionUID field of type long
+----------
+----------
+14. WARNING in E:\infinity-projects\OL-InfinityERP-Plugins\src\za\co\ntier\processes\ProductFinder.java (at line 3)
+	import org.compiere.model.MOrder;
+	       ^^^^^^^^^^^^^^^^^^^^^^^^^
+The import org.compiere.model.MOrder is never used
+----------
+15. WARNING in E:\infinity-projects\OL-InfinityERP-Plugins\src\za\co\ntier\processes\ProductFinder.java (at line 23)
+	import za.co.ntier.woocommerce.WcOrder;
+	       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The import za.co.ntier.woocommerce.WcOrder is never used
+----------
+----------
+16. WARNING in E:\infinity-projects\OL-InfinityERP-Plugins\src\za\co\ntier\processes\RefreshBundle.java (at line 19)
+	String name = bundle.getSymbolicName();
+	       ^^^^
+The value of the local variable name is not used
+----------
+----------
+17. WARNING in E:\infinity-projects\OL-InfinityERP-Plugins\src\za\co\ntier\processes\WcUnSyncOrders.java (at line 3)
+	import org.compiere.model.MOrder;
+	       ^^^^^^^^^^^^^^^^^^^^^^^^^
+The import org.compiere.model.MOrder is never used
+----------
+18. WARNING in E:\infinity-projects\OL-InfinityERP-Plugins\src\za\co\ntier\processes\WcUnSyncOrders.java (at line 26)
+	import za.co.ntier.woocommerce.WcOrder;
+	       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The import za.co.ntier.woocommerce.WcOrder is never used
+----------
+19. WARNING in E:\infinity-projects\OL-InfinityERP-Plugins\src\za\co\ntier\processes\WcUnSyncOrders.java (at line 117)
+	List<Map<String, String>> listOfMetaData = new ArrayList();
+	                                           ^^^^^^^^^^^^^^^
+Type safety: The expression of type ArrayList needs unchecked conversion to conform to List<Map<String,String>>
+----------
+20. WARNING in E:\infinity-projects\OL-InfinityERP-Plugins\src\za\co\ntier\processes\WcUnSyncOrders.java (at line 117)
+	List<Map<String, String>> listOfMetaData = new ArrayList();
+	                                               ^^^^^^^^^
+ArrayList is a raw type. References to generic type ArrayList<E> should be parameterized
+----------
+----------
+21. WARNING in E:\infinity-projects\OL-InfinityERP-Plugins\src\za\co\ntier\processes\WooCommerce.java (at line 28)
+	import java.time.LocalDateTime;
+	       ^^^^^^^^^^^^^^^^^^^^^^^
+The import java.time.LocalDateTime is never used
+----------
+22. WARNING in E:\infinity-projects\OL-InfinityERP-Plugins\src\za\co\ntier\processes\WooCommerce.java (at line 130)
+	boolean isExisting = isExistingOrder(String.valueOf(id));
+	        ^^^^^^^^^^
+The value of the local variable isExisting is not used
+----------
+23. WARNING in E:\infinity-projects\OL-InfinityERP-Plugins\src\za\co\ntier\processes\WooCommerce.java (at line 135)
+	String whereClause = "poreference = ?";
+	       ^^^^^^^^^^^
+The value of the local variable whereClause is not used
+----------
+24. WARNING in E:\infinity-projects\OL-InfinityERP-Plugins\src\za\co\ntier\processes\WooCommerce.java (at line 190)
+	List<Map<String, String>> listOfMetaData = new ArrayList();
+	                                           ^^^^^^^^^^^^^^^
+Type safety: The expression of type ArrayList needs unchecked conversion to conform to List<Map<String,String>>
+----------
+25. WARNING in E:\infinity-projects\OL-InfinityERP-Plugins\src\za\co\ntier\processes\WooCommerce.java (at line 190)
+	List<Map<String, String>> listOfMetaData = new ArrayList();
+	                                               ^^^^^^^^^
+ArrayList is a raw type. References to generic type ArrayList<E> should be parameterized
+----------
+----------
+26. WARNING in E:\infinity-projects\OL-InfinityERP-Plugins\src\za\co\ntier\woocommerce\WcOrder.java (at line 33)
+	import org.compiere.util.KeyNamePair;
+	       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The import org.compiere.util.KeyNamePair is never used
+----------
+27. WARNING in E:\infinity-projects\OL-InfinityERP-Plugins\src\za\co\ntier\woocommerce\WcOrder.java (at line 47)
+	private final int POSTENDERTYPE_ID = 1000000;
+	                  ^^^^^^^^^^^^^^^^
+The value of the field WcOrder.POSTENDERTYPE_ID is not used
+----------
+28. WARNING in E:\infinity-projects\OL-InfinityERP-Plugins\src\za\co\ntier\woocommerce\WcOrder.java (at line 342)
+	List<Integer> bundled_items = (List<Integer>)line.get("bundled_items");
+	                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Type safety: Unchecked cast from capture#95-of ? to List<Integer>
+----------
+29. WARNING in E:\infinity-projects\OL-InfinityERP-Plugins\src\za\co\ntier\woocommerce\WcOrder.java (at line 477)
+	for(Object item:(ArrayList)orderWc.get("meta_data")) {
+	                 ^^^^^^^^^
+ArrayList is a raw type. References to generic type ArrayList<E> should be parameterized
+----------
+29 problems (29 warnings)
