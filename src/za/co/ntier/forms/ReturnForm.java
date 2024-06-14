@@ -425,6 +425,7 @@ public class ReturnForm  extends ADForm {
 			if(rmas.size()==0) {
 				RMA = new MRMA(Env.getCtx(), 0,null);
 				RMA.setC_Order_ID(order.get_ID());
+				RMA.set_ValueOfColumn("POReference", order.getPOReference());
 				RMA.setName("RMA for Order# "+order.getDocumentNo());
 				RMA.setC_DocType_ID(1000031);
 				RMA.setM_RMAType_ID(1000000);
@@ -502,6 +503,8 @@ public class ReturnForm  extends ADForm {
 				.list();
 			if(inouts.size()==0) {
 				cReturn = new MInOut(Env.getCtx(), 0, null);
+				cReturn.setIsSOTrx(true);
+				cReturn.setPOReference(order.getPOReference());
 				cReturn.setDescription("Return for Order# "+order.getDocumentNo());
 				cReturn.setM_RMA_ID(rma.getM_RMA_ID());
 				cReturn.setAD_Org_ID(Env.getAD_Org_ID(Env.getCtx()));
