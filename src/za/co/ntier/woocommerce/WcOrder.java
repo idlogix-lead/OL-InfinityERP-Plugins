@@ -1,6 +1,7 @@
 package za.co.ntier.woocommerce;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -231,6 +232,7 @@ public final class WcOrder {
 	}
 
 	public void createOrderLine(Map<?, ?> line, Map<?, ?> orderWc) {
+		MathContext mc = new MathContext(0);
 		MOrderLine orderLine = new MOrderLine(order);
 		orderLine.setAD_Org_ID(order.getAD_Org_ID());
 		if(isBundle((String)line.get("name"))) {
@@ -258,7 +260,8 @@ public final class WcOrder {
 //		orderLine.setPriceList(getListPrice(line));
 			setLinePricing(orderLine);
 			BigDecimal linePrice = new BigDecimal(line.get("total").toString());
-			if(linePrice.compareTo(Env.ZERO)>0 && linePrice.compareTo(orderLine.getPriceActual())<0) {
+			if(linePrice.compareTo(Env.ZERO)>0 && linePrice.compareTo(orderLine.getPriceEntered().multiply(orderLine.getQtyEntered(),mc))<0) {
+				linePrice = linePrice.divide(BigDecimal.valueOf((long) qty),mc);
 				orderLine.setPriceEntered(linePrice);	
 				orderLine.setPriceActual(linePrice);
 				orderLine.setDiscount();
@@ -520,6 +523,7 @@ void setLinePricing(MOrderLine oline) {
 	}
 
 	public void applyDiscount() {
+		MathContext mc = new MathContext(5);
 		for(Bundle bundle: bdls) {
 			List<MOrderLine> list = new Query(Env.getCtx(), MOrderLine.Table_Name, " C_Order_ID = ? and bundleid = ? ", order.get_TrxName())
 					.setParameters(order.getC_Order_ID(),bundle.getId()).setOrderBy(" created")
@@ -531,18 +535,19 @@ void setLinePricing(MOrderLine oline) {
 				linesTotal=linesTotal.add(oline.getPriceEntered());
 			}
 			BigDecimal bundlePrice = bundle.getTotal();
-			if(linesTotal.compareTo(bundlePrice)<=0)
+			if(linesTotal.compareTo(Env.ZERO)==0 || bundlePrice.compareTo(Env.ZERO)==0 || linesTotal.compareTo(bundlePrice)<=0)
 				return;
 			BigDecimal totalDiscount = linesTotal.subtract(bundlePrice).setScale(0, BigDecimal.ROUND_DOWN);
 			BigDecimal runningSum = Env.ZERO;
 			for(MOrderLine oline:list) {
 				BigDecimal discount = Env.ZERO;
-				runningSum = runningSum.add(totalDiscount.divide(prodCount,RoundingMode.HALF_DOWN));
+				BigDecimal proportionalDisc = oline.getPriceEntered().divide(linesTotal,mc).multiply(totalDiscount, mc);
+				runningSum = runningSum.add(proportionalDisc);
 				if(totalDiscount.subtract(runningSum).compareTo(Env.ONE)<=0) {
-					discount = totalDiscount.subtract(runningSum.subtract(totalDiscount.divide(prodCount,RoundingMode.HALF_DOWN)));
+					discount = totalDiscount.subtract(runningSum.subtract(proportionalDisc));
 				}
 				else {
-					discount = totalDiscount.divide(prodCount,RoundingMode.HALF_DOWN).setScale(0, BigDecimal.ROUND_DOWN);
+					discount = proportionalDisc;
 				}
 				  oline.setPriceEntered(oline.getPriceEntered().subtract(discount));
 				  oline.setPriceActual(oline.getPriceEntered());
@@ -555,40 +560,40 @@ void setLinePricing(MOrderLine oline) {
 	}
 
 	String getcouponCodes(Map<?,?> wcOrder) {
-//		MReference reference = new MReference(ctx, "1bc246ff-9c1f-4390-b4a7-f248dda300bb", trxName);
-//		List<String> existing = new ArrayList<String>();
-//		String sql ="select value,name from ad_ref_list where ad_reference_id = ?";
-//		ValueNamePair[] pairs = DB.getValueNamePairs(sql, true, Arrays.asList(reference.get_ID()));
-//		for(ValueNamePair code:pairs) {
-//			existing.add(code.getID());
-//		}
-//		List<String> codes = new ArrayList<String>();
-//		if(wcOrder.get("coupon_lines")!=null) 
-//		{
-//			List<?> couponLines = (List<?>)wcOrder.get("coupon_lines");
-//			for(int i=0;i<couponLines.size();i++) {
-//				Map<?,?> line = (Map<?,?>)couponLines.get(i);
-//				String ccode = (String)line.get("code");
-//				if(existing.contains(ccode))
-//					codes.add(ccode);
-//				else 
-//				{
-//					MRefList coupon = new MRefList(ctx, 0, ccode);
-//					coupon.setAD_Reference_ID(reference.get_ID());
-//					coupon.setValue(ccode);
-//					coupon.setName(ccode);
-//					coupon.setAD_Org_ID(0);
-//					
-//					try {
-//						coupon.saveEx();
-//						codes.add(ccode);
-//					} catch (Exception e) {
-//						// TODO: handle exception
-//					};
-//				}
-//			}
-//		}
-//		return String.join(",", codes);
-		return "";
+		MReference reference = new MReference(ctx, "1bc246ff-9c1f-4390-b4a7-f248dda300bb", trxName);
+		List<String> existing = new ArrayList<String>();
+		String sql ="select value,name from ad_ref_list where ad_reference_id = ?";
+		ValueNamePair[] pairs = DB.getValueNamePairs(sql, true, Arrays.asList(reference.get_ID()));
+		for(ValueNamePair code:pairs) {
+			existing.add(code.getID());
+		}
+		List<String> codes = new ArrayList<String>();
+		if(wcOrder.get("coupon_lines")!=null) 
+		{
+			List<?> couponLines = (List<?>)wcOrder.get("coupon_lines");
+			for(int i=0;i<couponLines.size();i++) {
+				Map<?,?> line = (Map<?,?>)couponLines.get(i);
+				String ccode = (String)line.get("code");
+				if(existing.contains(ccode))
+					codes.add(ccode);
+				else 
+				{
+					MRefList coupon = new MRefList(ctx, 0, trxName);
+					coupon.setAD_Reference_ID(reference.get_ID());
+					coupon.setValue(ccode);
+					coupon.setName(ccode);
+					coupon.setAD_Org_ID(0);
+					
+					try {
+						coupon.saveEx();
+						codes.add(ccode);
+					} catch (Exception e) {
+						// TODO: handle exception
+					};
+				}
+			}
+		}
+		return String.join(",", codes);
+		
 	}
 }
