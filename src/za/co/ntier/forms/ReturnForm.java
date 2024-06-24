@@ -554,7 +554,7 @@ public class ReturnForm  extends ADForm {
 				line.setM_InOut_ID(cReturn.getM_InOut_ID());
 				line.setM_Product_ID(obj.getProduct().getM_Product_ID());
 				line.setQty(qty);
-				line.setM_Locator_ID(1000001);
+				line.setM_Locator_ID(1000000);
 				line.setM_RMALine_ID(obj.getRMALine().get_ID());
 				line.setC_UOM_ID(p.getC_UOM_ID());
 				line.save();

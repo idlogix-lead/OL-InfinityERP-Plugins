@@ -201,9 +201,13 @@ public class PackingForm  extends ADForm {
 //		List<MOrder> list = new Query(Env.getCtx(), I_C_Order.Table_Name, " (case when CourierCode is null then poreference=? else CourierCode=? end)  AND docstatus IN ('CO','DR','IN')", null)
 //				.setParameters(cn,cn).setOrderBy(" created")
 //				.list();
-			List<MOrder> list = new Query(Env.getCtx(), I_C_Order.Table_Name, " (case when CourierCode is null then poreference=? else CourierCode=? end)  AND docstatus IN ('DR','IN')", null)
+			List<MOrder> list = new Query(Env.getCtx(), I_C_Order.Table_Name, " (case when CourierCode is null then poreference=? else CourierCode=? end)  AND docstatus IN ('CO','DR','IN')", null)
 					.setParameters(cn,cn).setOrderBy(" created")
 					.list();
+			if(order.getDocStatus().equals(order.DOCACTION_Complete)) {
+				showError("Order Already Completed/Dispatched");
+				return;
+			}
 			if(list!=null && list.size()>0) {
 				order = list.get(0);
 				if(order.get_ValueAsBoolean("isScanning"))
@@ -212,10 +216,6 @@ public class PackingForm  extends ADForm {
 					showError("Order is currently Scanned by | "+scannerName+" |");
 					return;
 				}
-//				if(order.getDocStatus().equals(order.DOCACTION_Complete)) {
-//					showError("Order Already Completed/Dispatched");
-//					return;
-//				}
 				order.set_ValueOfColumn("isScanning", true);
 				order.set_ValueOfColumn("ScannedBy", Env.getAD_User_ID(Env.getCtx()));
 				order.set_ValueOfColumn("ScannedAt", (new Timestamp(System.currentTimeMillis())));

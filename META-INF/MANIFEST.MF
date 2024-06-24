@@ -14,7 +14,8 @@ Require-Bundle: org.adempiere.plugin.utils;bundle-version="7.1.0",
 Service-Component: ProcessFactory.xml,WCFormCD.xml,OLModelValidators.xml,CalloutFactoryCD.xml,
  WCModelFactory.xml
 Bundle-Vendor: nTier Software Services
-Export-Package: za.co.ntier.factories,
+Export-Package: com.icoderman.woocommerce.oauth,
+ za.co.ntier.factories,
  za.co.ntier.model,
  za.co.ntier.processes,
  za.co.ntier.woocommerce
