@@ -208,6 +208,7 @@ public class PackingForm  extends ADForm {
 				showError("Order Already Completed/Dispatched");
 				return;
 			}
+			
 			if(list!=null && list.size()>0) {
 				order = list.get(0);
 				if(order.get_ValueAsBoolean("isScanning"))
