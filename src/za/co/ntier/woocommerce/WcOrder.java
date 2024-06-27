@@ -260,7 +260,9 @@ public final class WcOrder {
 //		orderLine.setPriceList(getListPrice(line));
 			setLinePricing(orderLine);
 			BigDecimal linePrice = new BigDecimal(line.get("total").toString());
-			if(linePrice.compareTo(Env.ZERO)>0 && linePrice.compareTo(orderLine.getPriceEntered().multiply(orderLine.getQtyEntered(),mc))<0) {
+			boolean partOfBundle = line.get("bundled_by")!=null && line.get("bundled_by").toString().length()>0 ;
+			
+			if(!partOfBundle && linePrice.compareTo(Env.ZERO)>=0 && linePrice.compareTo(orderLine.getPriceEntered().multiply(orderLine.getQtyEntered(),mc))<0) {
 				linePrice = linePrice.divide(BigDecimal.valueOf((long) qty),mc);
 				orderLine.setPriceEntered(linePrice);	
 				orderLine.setPriceActual(linePrice);
@@ -532,7 +534,7 @@ void setLinePricing(MOrderLine oline) {
 			BigDecimal prodCount=Env.ZERO;
 			for(MOrderLine oline:list) {
 				prodCount = prodCount.add(Env.ONE);
-				linesTotal=linesTotal.add(oline.getPriceEntered());
+				linesTotal=linesTotal.add(oline.getLineNetAmt());
 			}
 			BigDecimal bundlePrice = bundle.getTotal();
 			if(linesTotal.compareTo(Env.ZERO)==0 || bundlePrice.compareTo(Env.ZERO)==0 || linesTotal.compareTo(bundlePrice)<=0)
